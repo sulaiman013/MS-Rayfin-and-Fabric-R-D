@@ -1,0 +1,58 @@
+// =====================================================================
+// Lead-to-Install Pipeline: semantic model measures
+// Add these to the Direct Lake semantic model on the gold lakehouse.
+// Prereqs: relationships created per README step 6, and DimDate marked as a date table.
+// =====================================================================
+
+// ---------- Volume ----------
+Total Leads = COUNTROWS ( FactLead )
+
+Won Leads = CALCULATE ( COUNTROWS ( FactLead ), FactLead[IsWon] = 1 )
+
+Lost Leads = CALCULATE ( COUNTROWS ( FactLead ), FactLead[IsLost] = 1 )
+
+Open Leads = [Total Leads] - [Won Leads] - [Lost Leads]
+
+// ---------- Value ----------
+Pipeline Value = SUM ( FactLead[EstimatedValue] )
+
+Won Value = CALCULATE ( SUM ( FactLead[EstimatedValue] ), FactLead[IsWon] = 1 )
+
+Avg Deal Size = DIVIDE ( [Won Value], [Won Leads] )
+
+// ---------- Conversion ----------
+Win Rate = DIVIDE ( [Won Leads], [Total Leads] )
+
+Loss Rate = DIVIDE ( [Lost Leads], [Total Leads] )
+
+// ---------- Funnel (uses the stage event history) ----------
+// Put DimStage[StageName] on the axis to get a funnel of distinct leads per stage.
+Leads Reaching Stage = DISTINCTCOUNT ( FactStageEvent[LeadId] )
+
+Avg Days in Stage = AVERAGE ( FactStageEvent[DurationDays] )
+
+// Average total cycle time for leads that were won.
+Avg Days to Win =
+AVERAGEX (
+    FILTER ( VALUES ( FactLead[LeadId] ), FactLead[IsWon] = 1 ),
+    CALCULATE ( SUM ( FactStageEvent[DurationDays] ) )
+)
+
+// ---------- Quotes ----------
+Total Quotes = COUNTROWS ( FactQuote )
+
+Accepted Quotes = CALCULATE ( COUNTROWS ( FactQuote ), FactQuote[IsAccepted] = 1 )
+
+Quote Acceptance Rate = DIVIDE ( [Accepted Quotes], [Total Quotes] )
+
+Avg Quote Response Days = AVERAGE ( FactQuote[ResponseDays] )
+
+Quoted Amount = SUM ( FactQuote[Amount] )
+
+// ---------- Time intelligence (DimDate must be marked as a date table) ----------
+Leads MoM % =
+VAR Curr = [Total Leads]
+VAR Prev = CALCULATE ( [Total Leads], DATEADD ( DimDate[Date], -1, MONTH ) )
+RETURN DIVIDE ( Curr - Prev, Prev )
+
+Won Value YTD = TOTALYTD ( [Won Value], DimDate[Date] )

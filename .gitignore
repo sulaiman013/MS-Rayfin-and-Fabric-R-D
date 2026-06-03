@@ -1,0 +1,16 @@
+# Node / Rayfin
+node_modules/
+dist/
+build/
+.rayfin/
+.env
+.env.*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
