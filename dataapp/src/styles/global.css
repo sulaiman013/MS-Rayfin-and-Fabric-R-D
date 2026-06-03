@@ -1,0 +1,59 @@
+/* Centralized theme. Change a token here and every visual follows,
+   which is the consistency win the data app template is built around. */
+:root {
+  --bg: #ffffff;
+  --panel: #f8f9fa;
+  --ink: #1e1e1e;
+  --muted: #495057;
+  --brand: #1971c2;
+  --good: #2f9e44;
+  --grid: #e9ecef;
+  --radius: 10px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+  padding: 20px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--grid);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.kpi {
+  grid-column: span 3;
+}
+.kpi .label {
+  color: var(--muted);
+  font-size: 13px;
+}
+.kpi .value {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.panel-6 {
+  grid-column: span 6;
+}
+.panel-12 {
+  grid-column: span 12;
+}
+.panel-title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+}

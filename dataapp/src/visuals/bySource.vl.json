@@ -1,0 +1,25 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Grouped bar: total vs won leads by lead source.",
+  "data": { "name": "table" },
+  "transform": [
+    { "fold": ["Total Leads", "Won Leads"], "as": ["Metric", "Value"] }
+  ],
+  "mark": { "type": "bar", "cornerRadiusEnd": 4 },
+  "encoding": {
+    "x": { "field": "LeadSourceName", "type": "nominal", "title": null, "axis": { "labelAngle": -30 } },
+    "xOffset": { "field": "Metric", "type": "nominal" },
+    "y": { "field": "Value", "type": "quantitative", "title": "Leads" },
+    "color": {
+      "field": "Metric",
+      "type": "nominal",
+      "title": null,
+      "scale": { "domain": ["Total Leads", "Won Leads"], "range": ["#1971c2", "#2f9e44"] }
+    },
+    "tooltip": [
+      { "field": "LeadSourceName", "type": "nominal", "title": "Source" },
+      { "field": "Metric", "type": "nominal" },
+      { "field": "Value", "type": "quantitative" }
+    ]
+  }
+}

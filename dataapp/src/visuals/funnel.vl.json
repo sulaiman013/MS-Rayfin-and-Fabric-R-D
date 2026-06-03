@@ -1,0 +1,24 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Lead funnel: distinct leads reaching each stage, ordered by funnel position.",
+  "data": { "name": "table" },
+  "mark": { "type": "bar", "cornerRadiusEnd": 4 },
+  "encoding": {
+    "y": {
+      "field": "StageName",
+      "type": "nominal",
+      "sort": { "field": "StageOrder", "order": "ascending" },
+      "title": null
+    },
+    "x": {
+      "field": "Leads",
+      "type": "quantitative",
+      "title": "Leads reaching stage"
+    },
+    "color": { "value": "#1971c2" },
+    "tooltip": [
+      { "field": "StageName", "type": "nominal", "title": "Stage" },
+      { "field": "Leads", "type": "quantitative", "title": "Leads" }
+    ]
+  }
+}

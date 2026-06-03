@@ -1,0 +1,12 @@
+// Leads and wins by lead source, sorted by volume.
+EVALUATE
+CALCULATETABLE (
+    SUMMARIZECOLUMNS (
+        'DimLeadSource'[LeadSourceName],
+        "Total Leads", [Total Leads],
+        "Won Leads", [Won Leads],
+        "Won Value", [Won Value]
+    )
+    {{FILTERS}}
+)
+ORDER BY [Total Leads] DESC

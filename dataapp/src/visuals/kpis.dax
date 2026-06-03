@@ -1,0 +1,12 @@
+// Single-row query for the KPI cards. Bind each column to a single-value card
+// component from the data app template (KPI callouts are a preconfigured visual).
+EVALUATE
+CALCULATETABLE (
+    ROW (
+        "Total Leads", [Total Leads],
+        "Win Rate", [Win Rate],
+        "Won Value", [Won Value],
+        "Avg Days to Win", [Avg Days to Win]
+    )
+    {{FILTERS}}
+)
