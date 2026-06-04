@@ -1,8 +1,8 @@
 import { entity, role, uuid, text, email, decimal, date, set, one, many } from '@microsoft/rayfin-core';
-import type { Rep } from './Rep.js';
-import type { LeadSource } from './LeadSource.js';
-import type { StageEvent } from './StageEvent.js';
-import type { Quote } from './Quote.js';
+import { Rep } from './Rep.js';
+import { LeadSource } from './LeadSource.js';
+import { StageEvent } from './StageEvent.js';
+import { Quote } from './Quote.js';
 
 // The opportunity. `stage` holds the current funnel position; the full history
 // lives in StageEvent so we can compute time-in-stage and funnel conversion.

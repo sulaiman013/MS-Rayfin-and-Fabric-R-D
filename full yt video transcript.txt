@@ -1,0 +1,252 @@
+0:033 secondsYOHAN LASORSA: Hey, folks.
+0:044 secondsWelcome to this session where we'll discuss a somewhat hot topic among developers, pushing vibe-coded apps to production, but safely.
+0:1212 secondsMy name is Yohan Lasorsa, and I'm a Principal Developer Advocate here at Microsoft.
+0:1717 secondsCoding agents have become exponentially better in the past year, and this has changed completely how we build new applications.
+0:2525 secondsMore people, even non-technical folks, now can take a real shot at building the app they imagined.
+0:3232 secondsThe timeline changed, too, with dramatic speed increases.
+0:3636 secondsWhat used to take months to build a prototype now takes minutes.
+0:4141 secondsThe risk, though, is treating the first working demo as the production foundation.
+0:4747 secondsIf you're a developer, I'm sure you've already experienced something like this.
+0:5353 secondsMarketing just had a crazy app idea yesterday, and today, they're showing it to you after they've played a bit
+1:001 minutewith GitHub Copilot or some other AI tool, asking that the code is there, so you just have to put it in production.
+1:091 minute, 9 secondsI've been there multiple times, at least, so, yeah, this somehow feels a bit personal.
+1:211 minute, 21 secondsHere's the hard truth.
+1:221 minute, 22 secondsBesides my own experience, multiple surveys and analysis show that 80 to 90% of AI-generated or vibe-coded prototypes never become production apps.
+1:361 minute, 36 secondsI would like to say that's for good reasons.
+1:391 minute, 39 secondsYou've all heard the horror stories lately about the outages, security, and data leaks with vibe-coded apps that may have been pushed public a bit too early.
+1:531 minute, 53 secondsThat's because while the development speed for apps is now faster than ever, the bar for production-grade apps still hasn't changed.
+2:012 minutes, 1 secondYou still need to know who the user is and what they're allowed to do.
+2:062 minutes, 6 secondsYou still need a trustworthy data model, safe migrations, and clear boundaries around the data.
+2:132 minutes, 13 secondsYou still need governance, compliance, security reviews, and a deployment model that can scale and be observed.
+2:212 minutes, 21 secondsIncreasingly, you also need the data created by the app to be immediately useful, not just stored somewhere,
+2:282 minutes, 28 secondsbut you need to be able to query and get insights from it and make it accessible to AI agents.
+2:362 minutes, 36 secondsThis is the shift.
+2:372 minutes, 37 secondsCoding agents make it much easier to go from idea to prototype, but the real gap now is getting from prototype to production.
+2:482 minutes, 48 secondsRayfin is there to serve that gap.
+2:512 minutes, 51 secondsIt's a managed backend as a service for building enterprise apps built on top of Microsoft Fabric, so it's a complete platform for web apps
+3:003 minutesthat provides you a backend with a managed database, authentication, hosting, functions, storage, and real-time services.
+3:093 minutes, 9 secondsThat's great, having all of this in one place, but you may already be using other platforms that provide similar features.
+3:183 minutes, 18 secondsWhat's different here is that it was built to be enterprise-ready and Fabric-native from day one.
+3:253 minutes, 25 secondsAll the things that you already like and get from Fabric, like governance, security, compliance, and easy integration with your Fabric data estates, you have it with Rayfin.
+3:373 minutes, 37 secondsThere's also another thing that I should mention.
+3:403 minutes, 40 secondsIt was built from the start with coding agents in mind, with the goal of making vibe-coded apps benefit from all of these features without any extra work from your side.
+3:543 minutes, 54 secondsNow that I've set the context, let's have a quick look at what we'll explore during this session.
+4:014 minutes, 1 secondFrom now on, don't worry, it will be mostly demos.
+4:054 minutes, 5 secondsWe'll see how to create a new app using a coding agent in Rayfin and see how to control how users can access it.
+4:164 minutes, 16 secondsWe'll talk about data integrity and migration as apps evolve over time. We'll live-push our app to production.
+4:244 minutes, 24 secondsFinally, we'll see how to bring in some of the Fabric intelligence to build a nice dashboard for our application, so let's start by creating our application from scratch.
+4:384 minutes, 38 secondsI'll move on to VS Code, and I'll use "npm create" with the Microsoft Rayfin package to bootstrap my project.
+4:544 minutes, 54 secondsHere, I get the option to either start using a built-in template from a template that's somewhere else, maybe in an external Git repo, or just start from scratch.
+5:065 minutes, 6 secondsFor now, I will use one of the built-in templates, so you have multiple options.
+5:115 minutes, 11 secondsI'll keep the Blank app because I want to customize it for my needs.
+5:175 minutes, 17 secondsI'll call my project "Chef." I want Microsoft SQL database to host the file.
+5:255 minutes, 25 secondsYeah, after it copies all the files, it will just install everything I need.
+5:315 minutes, 31 secondsMeanwhile, I want to give you some background about the app that we are going to build.
+5:365 minutes, 36 secondsI come from an Italian family, and we have plenty of recipes that are passed down from generation to generation, but most are only in the heads of the family members.
+5:485 minutes, 48 secondsRecently, as I was chatting with my kids about some of these recipes, I thought that it would be great to have a better way to store and share them,
+5:565 minutes, 56 secondsespecially with the younger generation that is more used to digital tools.
+6:026 minutes, 2 secondsOne critical requirement that I have if I want to get the elders' buy-in is that the family secrets must stay secret.
+6:126 minutes, 12 secondsI mean, some of these recipes are our very own secret sauce that we just don't want to share with the world, so I'm sure you can relate to that.
+6:226 minutes, 22 secondsFor this app, I've drafted this spec here.
+6:266 minutes, 26 secondsOkay. This is an app that's called, "Contoso Chef." It's a recipe sharing website used to store personal recipes and seek some meal inspiration.
+6:386 minutes, 38 secondsTo create a recipe, you need authentication. Recipes have different visibility, private by default.
+6:466 minutes, 46 secondsYou can also share some recipe that you don't want to be publicly listed with friends using a unique link.
+6:526 minutes, 52 secondsThat's something I want also, because not all recipes are just family secrets, and some can be just shared with anyone.
+7:037 minutes, 3 secondsI'm listing some features like likes, so you can favorite some of your recipes.
+7:097 minutes, 9 secondsOh, and I already prepared inside this data folder, some public recipes, something that I don't mind sharing
+7:187 minutes, 18 secondsin JSON format, just to get some data to start with, also, with images.
+7:257 minutes, 25 secondsI put everything in there, and I even have some ideas that will be kept for later.
+7:317 minutes, 31 secondsSo, okay, let's get started with this application using Copilot CLI.
+7:367 minutes, 36 secondsI'm running Copilot in a yolo mode to be able -- so it can just do its thing.
+7:447 minutes, 44 secondsYou can see that it's -- oh, I'm not in the right folder.
+7:497 minutes, 49 secondsSo first, I need to go to the Chef folder and restart Copilot.
+7:577 minutes, 57 secondsYou can see that there are some skills on the MCP server. Let's just explore that.
+8:058 minutes, 5 secondsSo Rayfin, if you bootstrap the project using the Microsoft Rayfin CLI, you get, by default, this Rayfin skill
+8:148 minutes, 14 secondsthat gives some instruction to the agents to understand how to create and use the Rayfin SDK to build a project.
+8:238 minutes, 23 secondsI also added one front-end design skill that's someone that you can find on the web to get some better web design capabilities to the agent.
+8:368 minutes, 36 secondsIf we look at the MCP server, we also have one from Rayfin to allow the agents to load and all the documentation to understand how Rayfin projects works.
+8:508 minutes, 50 secondsThat's it, and since I put everything I wanted to implement in this spec.md file, I can just tell my agents to go on and implement what I have in my spec documents.
+9:059 minutes, 5 secondsOf course, the agent will start reading my spec, trying to look at the project to understand how it works.
+9:169 minutes, 16 secondsYou can see that it loaded the Rayfin skill to understand how Rayfin works. It may have used also the MCP server under the hood.
+9:249 minutes, 24 secondsIt's taking a look at the data. So yeah, you get the idea.
+9:319 minutes, 31 secondsBecause it's not really fun to just look at Copilots implement this stuff, we'll just fast forward a bit to the next step.
+9:429 minutes, 42 secondsI already run this prompt before and save the result inside this branch.
+9:489 minutes, 48 secondsI'll just remove this folder, so I put everything at the root of the project.
+9:559 minutes, 55 secondsOh, I'll just go back to my project.
+10:0010 minutesOkay. Now we're ready to see what the agents generated in there, so before we explore a bit of the project,
+10:1010 minutes, 10 secondsI just run this command to create the backend for my application.
+10:1610 minutes, 16 secondsFor that, I'll use the "npx Rayfin up" command with the "workspace URI" setting.
+10:2610 minutes, 26 secondsNow I'm going to Fabric. I have created this workspace. You can see that it's empty.
+10:3110 minutes, 31 secondsThis is where I will put all the database and the backend for my Rayfin app, so for now, I'll just copy this URL in there
+10:4110 minutes, 41 secondsand pass that to my command line and run it, and it should create all the backend and API endpoints,
+10:5010 minutes, 50 secondsalso the database in Fabric, and connect all of that to my application, so it will just take a few seconds.
+10:5710 minutes, 57 secondsMeanwhile, we can explore the project a bit.
+11:0111 minutes, 1 secondJust if you're curious, it took about 20 minutes to generate the project from my spec, so to get you an idea
+11:0911 minutes, 9 secondsof how long it takes to generate a Rayfin project from the template.
+11:1511 minutes, 15 secondsThe most important part of this project is located under the Rayfin folder. The first important file is this Rayfin.yml file.
+11:2411 minutes, 24 secondsYou can see here we have some metadata about the project, like the name of the project, which services I want
+11:3311 minutes, 33 secondsto be enabled for my project, like authentication, data storage, and static hosting.
+11:4011 minutes, 40 secondsI can even configure like, oh, I want my frontend to be built
+11:4511 minutes, 45 secondsand stuff like that, and the second most important folder is the Rayfin data folder.
+11:5311 minutes, 53 secondsThis is where you have all the entities for your application.
+11:5811 minutes, 58 secondsThat's, for example, let's look at what a recipe looks like, so you can see that it's a TypeScript class.
+12:0712 minutes, 7 secondsAll the entities are type safe, so you can use that in your application and get type inference from that.
+12:1812 minutes, 18 secondsTo describe the schema for my entities, I'm using Decoration from the Rayfin SDK.
+12:3012 minutes, 30 secondsIf you are a JavaScript nerd, just like me, you might be glad to hear that these are not just like Rayfin decorators -- sorry, not TypeScript decorators.
+12:4212 minutes, 42 secondsThese are the standard TC39 spec decorators that are coming into the JavaScript standard a bit more later.
+12:5212 minutes, 52 secondsSo yeah, this is already built to be future proof at this point.
+12:5612 minutes, 56 secondsSo yeah, I can see all the properties that I have in my recipes, like the list of ingredients, the visibility with the different options when it was created.
+13:0813 minutes, 8 secondsYou can even define the relation with the different entities, like a recipe can have many likes.
+13:1813 minutes, 18 secondsI can also have a look at the like entity to see how it's done, and basically, all these different entities are grouped into this schema.ts.
+13:2813 minutes, 28 secondsThis is what is used by Rayfin to create my database,
+13:3413 minutes, 34 secondsso if I go back here to my workspace, if I refresh, I should see, okay, the SQL database that was created.
+13:4413 minutes, 44 secondsThe schema was automatically generated from this data that was generated by the agent.
+13:5413 minutes, 54 secondsNow the next step is maybe just run the application to see what it looks like.
+14:0014 minutesSo for that, I run "npm run dev," and I should have my dev server running.
+14:0914 minutes, 9 secondsYeah, I have here the look of my application, so looking great.
+14:1514 minutes, 15 secondsContoso Chef, it's a cookbook, so for now, I can see that there's no data. I will start to sign in.
+14:2314 minutes, 23 secondsI can see already that it's asking me to sign in using Fabric OAuth. I'll just do that.
+14:3114 minutes, 31 secondsOh, okay, as I said, so first run, I just wanted to add some data into my app to be visible,
+14:4014 minutes, 40 secondsso it will import all the recipes I've put in the JSON file.
+14:4514 minutes, 45 secondsMeanwhile, we should be able to just have a look
+14:5014 minutes, 50 secondsat how it works, so I wait a bit until the data was imported, and we'll come back to see.
+14:5914 minutes, 59 secondsWhat's important to retain here is that when I asked the agent
+15:0615 minutes, 6 secondsto generate my application, it wasn't asked to reinvent how
+15:1315 minutes, 13 secondsto do authentication and find packages for that, how to handle storage, or how to handle that data access from scratch.
+15:2015 minutes, 20 secondsIt used what the Rayfin platform provides, so still looking to import all the data.
+15:3115 minutes, 31 secondsI will just open a new tab to keep it running, but meanwhile, just try to create my own recipe.
+15:3915 minutes, 39 secondsThat's what we wanted to see. For now, let's just say I want to create like a test recipe.
+15:4715 minutes, 47 secondsI have some description. For now, let's keep things private.
+15:5315 minutes, 53 secondsYeah, some French cuisine coming from France. Let's add 1 teaspoon of testing.
+16:0616 minutes, 6 secondsOkay, test should be good. Let's try to save this recipe.
+16:1416 minutes, 14 secondsYeah, I have my test recipe working in there, but what I wanted to show you is that, okay, I could create my recipe.
+16:2216 minutes, 22 secondsWe'll test later to see if it's really private as expected because that's time to check this critical requirement.
+16:3316 minutes, 33 secondsI want it to keep the family secrets secret, so I want to see
+16:3916 minutes, 39 secondsif this recipe that I created private is really private and check that the agent implemented it as I wanted.
+16:5016 minutes, 50 secondsWhat I'll do is just open the application inside a private browsing window, so I should not be authenticated in there.
+17:0317 minutes, 3 secondsYou can already see some of the recipes that were populated in there.
+17:0917 minutes, 9 secondsYeah, when you create a new recipe, the new ones just appear at first.
+17:1717 minutes, 17 secondsYou can see it's still loading, so what I do is just try something dumb.
+17:2217 minutes, 22 secondsJust try to copy-paste the URL to see if I can access this recipe that's supposed to be private, and it's not found.
+17:3017 minutes, 30 secondsThat's at least great.
+17:3117 minutes, 31 secondsIt's saying, okay, it should be private, so probably, that's -- I can't access it. That's exactly what I wanted to happen.
+17:3917 minutes, 39 secondsWhat we can do also is maybe just try to edit this, see if I can share it with the link,
+17:4717 minutes, 47 secondsso let's just save that recipe.
+17:5317 minutes, 53 secondsOkay. It should have finished, so it will probably be faster. Did it work?
+18:0118 minutes, 1 secondLet's try reloading.
+18:0318 minutes, 3 secondsOkay. It's now marked as "unlist." If I copy the link, let's try to refresh in there.
+18:1018 minutes, 10 secondsNow, I can access this recipe because it's marked as "unlist," and if I refresh in there, I should still not see it in the main page.
+18:2218 minutes, 22 secondsJust so you can see, I can make it also public to see that in
+18:3118 minutes, 31 secondsthat case, it should appear with the rest of the public recipe in there.
+18:3918 minutes, 39 secondsWhat's it called, "Test Recipe?" You can see that it was made public, now back to private.
+18:5118 minutes, 51 secondsLet's refresh and check that. Yeah, this time, it's not there.
+18:5918 minutes, 59 secondsOkay. This was just quickly checking that at least the agent seems to have generated things like I wanted them to be.
+19:1219 minutes, 12 secondsOf course, for the unlisted things, this is the MVP of my cooking app.
+19:1619 minutes, 16 secondsI wanted to keep things simple, just be able to share using the link, but you can also imagine more complex access control rules, being able to share only with specific authenticated users, for example.
+19:3019 minutes, 30 secondsYeah, for now, let's have a look at how the access control is implemented.
+19:3619 minutes, 36 secondsGoing back to the recipe entity, we can see these two things in there.
+19:4219 minutes, 42 secondsFirst, the read policy that we have put to allow any recipe that is not marked as private, so by the item that visibility.
+19:5519 minutes, 55 secondsThat's the property and the recipes that's in there.
+20:0120 minutes, 1 secondAs long as the recipe is not private, anybody can read it, even if you're not authenticated to the app.
+20:0920 minutes, 9 secondsNow, for an authenticated user, the policy is to be able
+20:1320 minutes, 13 secondsto read/write the recipe if it's not private --
+20:2220 minutes, 22 secondsnot write but at least read it if it's not private, or if it's private but you are the one that created it.
+20:3320 minutes, 33 secondsYeah, it seems obvious, but this is a key point here.
+20:3720 minutes, 37 secondsThis is because this is the moment where many prototypes fail and usually need to start rewriting the code.
+20:4420 minutes, 44 secondsHere we have the identity and access control part of the app foundation, so it's built into the SDK and the Rayfin platform.
+20:5420 minutes, 54 secondsIt's not just visual.
+20:5620 minutes, 56 secondsBy looking at it, this is how the backend handles the access control stuff.
+21:0321 minutes, 3 secondsNow, this is also when things start to get interesting, so let's say I want to implement one of my ideas that I kept for later to support user comments on recipes.
+21:1721 minutes, 17 secondsWe want to add a comment section to the recipe page, so going back to the project, I'll stop the server for now
+21:2821 minutes, 28 secondsand run Copilot again in yolo mode,
+21:3621 minutes, 36 secondsso I don't get any need for confirmations.
+21:4221 minutes, 42 secondsYeah, inside this spec, I also add, you know, in this Ideas for Later, what I wanted for comments,
+21:4921 minutes, 49 secondsso comments need authentication to create comments, and a user can comment on a recipe if they're authenticated.
+21:5721 minutes, 57 secondsThey can comment on a recipe that they can view, of course, and only the creator of recipe can delete comments on their recipe, so pretty simple rule.
+22:0722 minutes, 7 secondsWhat I'm just saying is I can just ask Copilot to implement, again, what's in there.
+22:1722 minutes, 17 secondsWhat it will do, just like before, is take a look at the project, use the Rayfin skill.
+22:2422 minutes, 24 secondsYou get the idea. It's not fun looking at the agents running
+22:3122 minutes, 31 secondsand implementing the stuff even though its time, it should only take a few minutes.
+22:3722 minutes, 37 secondsI'll skip to when I already ran this prompt, so I have this command branch.
+22:4522 minutes, 45 secondsI'll just do -- yeah, I need that.
+22:5322 minutes, 53 secondsLet's just undo the last comment so we can see the changes that were generated by the agent. What you can see -- that's okay.
+23:0023 minutesIt made some modification on the frontend part, so that's not what I want to focus on right now.
+23:0623 minutes, 6 secondsI want to see -- it first created a comment entity, something I wanted.
+23:1323 minutes, 13 secondsYeah, you can see all kinds of rules on what can or cannot be done.
+23:1923 minutes, 19 secondsI can see that it's more complex than the recipe because it has to under like all the different use case, who can delete,
+23:2723 minutes, 27 secondswho can update, who can create the comments and who can read it, so all kinds of different policies in there.
+23:3423 minutes, 34 secondsIt created the schema with the relations to the recipe,
+23:3923 minutes, 39 secondsand it made, also, some changes to the recipe entity, and it was also added to the schema.
+23:4923 minutes, 49 secondsThat means that I need to update the database schema to be able to run these changes.
+23:5923 minutes, 59 secondsTo do that, it also means that I have to generate a migration for my schema, and the nice thing is that Rayfin will do that for you.
+24:0924 minutes, 9 secondsYou have a command. Let's go back to my terminal.
+24:1524 minutes, 15 secondsWith the "npx Rayfin app: command, I can just do "db apply," and what it will do is analyze.
+24:2624 minutes, 26 secondsYou can see the logs in there. It will analyze all my entities.
+24:3124 minutes, 31 secondsSee what's currently implemented in the database, generate a migration schema, and just perform the migration for you.
+24:4224 minutes, 42 secondsAs you can see now, I'm at Version 2 of my schema. I also need to update my backend to be able to run the app.
+24:4924 minutes, 49 secondsI just, here, wanted to run the schema migration separately,
+24:5524 minutes, 55 secondsbut if you just do a Rayfin app, it will redeploy the backend, but also, perform the migration for you if needed, so it's just an all-in-one command.
+25:0825 minutes, 8 secondsLet's just wait until the backend is redeployed, and we'll restart the app to see how it looks like for the commands.
+25:1825 minutes, 18 secondsOkay. So again, "npm run dev" to have my app running, so let's just see what it looks like in the application.
+25:3325 minutes, 33 secondsI'll open like the first recipe. Let's add in a command like looks yummy.
+25:4825 minutes, 48 secondsI can see that I have the option to delete it since I created it myself.
+25:5225 minutes, 52 secondsLet's just open the same recipe inside my private browsing window so I'm not logged in.
+26:0226 minutes, 2 secondsI can see the command, and I cannot do anything to it. So, so far, looking great.
+26:1126 minutes, 11 secondsLet's just try to see if I can delete this command. Okay.
+26:2326 minutes, 23 secondsOkay. Just putting it another command, so yeah, you can see that it was quite easy and straightforward
+26:3126 minutes, 31 secondsto handle this schema migration, and that's exactly the point, because app changes after launch
+26:4026 minutes, 40 secondsand safe schema evolution are even more essential than getting it right the first time.
+26:4626 minutes, 46 secondsThis is particularly important if you handle critical data that you don't want to lose the family recipe.
+26:5726 minutes, 57 secondsTime for a quick checkpoint here.
+26:5926 minutes, 59 secondsSo yes, we just vibe coded an application, but the trick is we didn't ask the agent to figure out everything on its own.
+27:1027 minutes, 10 secondsIt didn't have to decide from scratch how authentication should work, how the database should be exposed, how APIs should be shaped.
+27:2127 minutes, 21 secondsInstead, the agent had guardrails.
+27:2527 minutes, 25 secondsIt had a workflow designed for agents, templates to start from, platforms primitives like authentication, database, GraphQL, APIs, and that makes a big difference.
+27:3727 minutes, 37 secondsBecause for a recipe sharing app, things like public or private recipe, it's not just UI features.
+27:4527 minutes, 45 secondsThey touch identity, permissions, data access, and API design, so the value here is that the agent can focus
+27:5427 minutes, 54 secondson implementing the app experience while the platform provides the foundation around it.
+28:0128 minutes, 1 secondThat's what I mean by vibe coding with guardrails.
+28:0528 minutes, 5 secondsYou have fast iteration, but not from a blank, unmanaged architecture. Now comes the important question, really.
+28:1428 minutes, 14 secondsWhat does it take to put this app to production?
+28:2128 minutes, 21 secondsWhat if I say to you that the app is already in production?
+28:2628 minutes, 26 secondsWhen we run the npx Rayfin app command in the first demo, that's basically what it took to create the back end, but also, put the app to production.
+28:3928 minutes, 39 secondsNow if we open the in there, the Fabric portal, you see that we have the database in there.
+28:4928 minutes, 49 secondsI can open the app, and yeah, it's exactly the same application that we tested locally.
+28:5828 minutes, 58 secondsI can also open it on its own page.
+29:0329 minutes, 3 secondsYeah, I can share this URL with my family and friends so they can also create recipes now.
+29:1129 minutes, 11 secondsYeah, I can now try to start adding all my family recipes with confidence about the data, and really,
+29:2129 minutes, 21 secondsyou should not expect any surprises when moving an app from development to production because it's built right from the start on the same foundation.
+29:3329 minutes, 33 secondsThat's exactly what we want here.
+29:3629 minutes, 36 secondsWe've seen how quick and easy we can create new enterprise-ready applications with Rayfin.
+29:4229 minutes, 42 secondsThe question that naturally comes next is how we can use the data that our app generated to build dynamic dashboards to get insights, because, yes, there's more to Rayfin.
+29:5829 minutes, 58 secondsThe idea here is pretty simple.
+30:0130 minutes, 1 secondInstead of treating the app and the analytics experience as two separate worlds, we can bring them closer together.
+30:1030 minutes, 10 secondsWe can do that using the new analytics app templates that's built for Rayfin.
+30:1530 minutes, 15 secondsCurrently, the Analytics app can work seamlessly with semantic models, so the data your app produces can immediately be displayed on a dashboard.
+30:2530 minutes, 25 secondsOn top of that, you get a robust visual stack, not just basic charts, but a complete design skill
+30:3230 minutes, 32 secondsfor AI agents that help turn raw data into something that's more polished, readable, and useful to you.
+30:4030 minutes, 40 secondsFor developers, this is really nice because you're not just building an app and saying good luck to the business afterwards.
+30:4830 minutes, 48 secondsYou're building an experience where the data can flow directly into dashboards, reportings, and insights.
+30:5630 minutes, 56 secondsYeah, there's also more coming soon as the experience to define custom actions triggered by your data will become simpler and even more integrated.
+31:0631 minutes, 6 secondsLet's have a quick look at what it means for our chef app.
+31:1031 minutes, 10 secondsWe have the data in Fabric, so if you're data-oriented, you would love to see some great dashboards and analytics on top of my recipes data, I'm sure.
+31:2231 minutes, 22 secondsI've used here a very early preview of the Analytics app templates, and what I did is basically just ask Copilot
+31:3031 minutes, 30 secondsto build a nice dashboard, pointing it to my semantic model and which Fabric workspace I wanted to use.
+31:4031 minutes, 40 secondsDon't mind the field services title in there.
+31:4231 minutes, 42 secondsThat's because, at first, I forgot to mention which semantic model I used, so we picked one from a different application I was building.
+31:5131 minutes, 51 secondsNow let's just have a look at the dashboard, so I'm running "npm run dev" again.
+32:0032 minutesLet's give it some time the load the data.
+32:0532 minutes, 5 secondsYeah, this is the result, so I'm pretty sure the latest version of the template is even nicer because I used an old one,
+32:1232 minutes, 12 secondsbut it's already great for just a few minutes of work to see all that data coming from my application.
+32:2332 minutes, 23 secondsIf there's one more thing to take away in this session, it's this.
+32:2732 minutes, 27 secondsThe fastest path to production starts with the right foundation. Coding agents help us move fast.
+32:3432 minutes, 34 secondsThey are great for bootstrapping an app, trying ideas, and iterating quickly, but as developers, we know that producing code is only one part of the story.
+32:4432 minutes, 44 secondsA real application still needs identity, data, security, deployments, and a platform that can support it over time.
+32:5332 minutes, 53 secondsWhen those pieces are already in the foundation, agents can move quickly without leaving a lot of cleanup for later.
+33:0233 minutes, 2 secondsWhen the app is Fabric native, the data is already where you need it next for analytics and AI-powered insight.
+33:1033 minutes, 10 secondsSo yes, by all means, build fast, but build on the foundation that can take you all the way to production.
+33:2133 minutes, 21 secondsThat's it for this session.
+33:2333 minutes, 23 secondsIf you want to learn more about everything I've talked about today, please take a look at our documentation,
+33:3033 minutes, 30 secondswhich will guide you through how you can use all these capabilities with even more detail. Thank you.
+
+Sync to video time

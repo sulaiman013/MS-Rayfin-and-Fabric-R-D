@@ -1,5 +1,5 @@
 import { entity, role, uuid, text, set, date, many } from '@microsoft/rayfin-core';
-import type { Lead } from './Lead.js';
+import { Lead } from './Lead.js';
 
 // Where a lead came from. Name is the specific source, channel is the category.
 @entity()

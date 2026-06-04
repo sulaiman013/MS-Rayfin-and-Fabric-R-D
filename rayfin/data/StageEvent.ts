@@ -1,5 +1,5 @@
 import { entity, role, uuid, text, date, set, one } from '@microsoft/rayfin-core';
-import type { Lead } from './Lead.js';
+import { Lead } from './Lead.js';
 
 // One row per funnel transition. Write a new StageEvent whenever a lead moves
 // stage. This is what powers time-in-stage and funnel conversion analytics.

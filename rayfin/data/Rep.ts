@@ -1,5 +1,5 @@
 import { entity, role, uuid, text, email, boolean, date, set, many } from '@microsoft/rayfin-core';
-import type { Lead } from './Lead.js';
+import { Lead } from './Lead.js';
 
 // A sales or design representative who owns leads.
 @entity()

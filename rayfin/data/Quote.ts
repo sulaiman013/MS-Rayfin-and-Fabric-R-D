@@ -1,5 +1,5 @@
 import { entity, role, uuid, text, decimal, date, set, one } from '@microsoft/rayfin-core';
-import type { Lead } from './Lead.js';
+import { Lead } from './Lead.js';
 
 // A quote issued for a lead. respondedAt is null until the customer answers,
 // which lets us measure quote response time and acceptance rate.

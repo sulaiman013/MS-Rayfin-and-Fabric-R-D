@@ -48,8 +48,10 @@ copy job. Four stages plus an optional write-back:
 
 - **Stage 1 (Rayfin):** the operational front-door. Reps create and move leads. OLTP source of truth.
   The app provisions a **SQL database in Fabric** from TypeScript entity decorators.
-- **Stage 2 (the bridge):** Fabric **mirrors that SQL database into OneLake as Delta tables
-  automatically**. This is the translytical claim: app writes show up analytics-ready, no pipeline.
+- **Stage 2 (the bridge):** a SQL database in Fabric **auto-mirrors into OneLake as Delta parquet,
+  always on, with no configuration and no ETL**, and exposes a read-only SQL analytics endpoint that a
+  Direct Lake model can sit on. This is the documented translytical mechanism, not an assumption.
+  ([mirroring overview](https://learn.microsoft.com/fabric/database/sql/mirroring-overview))
 - **Stage 3:** model the mirrored tables into a star schema and a Direct Lake semantic model.
 - **Stage 4:** a Power BI report reads the semantic model over Direct Lake.
 
@@ -149,6 +151,9 @@ generators read them from `FABRIC_SQL_SERVER` and `FABRIC_SQL_ENDPOINT` environm
 
 ### Track A: the full loop (a region that supports Fabric Apps)
 
+> Prerequisites: Node 20, 22, or 24; Docker for the local stack; pin the beta CLI
+> (`@microsoft/rayfin-cli`). See [RAYFIN_NOTES.md](RAYFIN_NOTES.md) for the full command and decorator reference.
+
 1. Start a Fabric trial (or use a capacity) in a **supported region** (for example Southeast Asia).
 2. `npm create @microsoft/rayfin@latest lead-pipeline --workspace "<your workspace>"`, copy the files
    from `rayfin/data/` into the project, then `npx rayfin up`. This provisions the SQL database,
@@ -196,6 +201,25 @@ These cost real time to find, so they are documented for the next person:
 
 ---
 
+## Rayfin / Fabric Apps reference
+
+The full verified reference (decorators, CLI, data API, auth policies, the data app template, and the
+translytical mechanism with citations) lives in [RAYFIN_NOTES.md](RAYFIN_NOTES.md). Two things worth
+calling out here:
+
+- **The entities are idiomatic and compile.** `rayfin/data/` models relationships with `@one`/`@many`
+  (each `@one` generates a `<prop>_id` FK), uses `@email`/`@decimal`/`@set`/`@boolean`, and is RLS-ready
+  (a commented `@role` policy shows how to scope each rep to their own leads). They type-check against
+  `@microsoft/rayfin-core` 1.33.1. Note: relationship targets must be value imports, not `import type`,
+  since `@one(() => Rep)` uses the class at runtime.
+- **The data app reads an existing model, it does not build one.** The Phase 2 `dataapp/` connects to
+  the semantic model through the Execute DAX Queries REST API (needs the "Dataset Execute Queries REST
+  API" tenant setting plus Build and Read on the model, and the model on a capacity), and cannot be
+  opened outside the Fabric portal yet. So the star-schema plus Direct Lake build here is the bridge
+  between the operational app and the analytics app, not redundant work.
+
+---
+
 ## Roadmap
 
 - [ ] Deploy Stage 1 (Rayfin app) in a supported region, or wait for Fabric Apps to reach East US.
@@ -217,7 +241,11 @@ deploys in a supported region, real rows flow through the auto-mirror and the sy
 
 ## References
 
+- [Verified Rayfin / Fabric Apps notes](RAYFIN_NOTES.md) in this repo (decorators, CLI, data API, auth, data app, translytical loop)
 - [What is Fabric Apps (Preview)?](https://learn.microsoft.com/en-us/fabric/apps/overview)
+- [Fabric Apps data models](https://learn.microsoft.com/fabric/apps/data-models) and [CLI reference](https://learn.microsoft.com/fabric/apps/cli-reference)
+- [Data app template](https://learn.microsoft.com/fabric/apps/data-apps-template)
+- [SQL database mirroring (auto-mirror to OneLake)](https://learn.microsoft.com/fabric/database/sql/mirroring-overview)
 - [Fabric region availability](https://learn.microsoft.com/en-us/fabric/admin/region-availability) (East US footnote 8)
 - [Introducing Rayfin (Fabric Updates Blog)](https://community.fabric.microsoft.com/t5/Fabric-Updates-Blog/Introducing-Rayfin-A-new-AI-first-way-to-build-deploy-and-govern/ba-p/5191676)
 
