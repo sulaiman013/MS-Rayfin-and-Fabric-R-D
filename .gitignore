@@ -14,3 +14,7 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Local research scratch (not for the public repo)
+full yt video transcript.txt
+*.transcript.txt
