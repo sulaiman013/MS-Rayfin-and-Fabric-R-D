@@ -1,0 +1,27 @@
+table DimRep
+	lineageTag: aaaaaaaa-0000-0000-0000-000000000002
+
+	column RepKey
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: RepKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000003
+
+	column RepName
+		dataType: string
+		summarizeBy: none
+		sourceColumn: RepName
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000004
+
+	column Showroom
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Showroom
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000005
+
+	partition DimRep = entity
+		mode: directLake
+		source
+			entityName: DimRep
+			schemaName: dbo
+			expressionSource: DatabaseQuery

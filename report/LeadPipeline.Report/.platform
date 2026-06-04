@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "LeadPipeline"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "88c3d51c-5b3a-494b-8eb3-59e5853c6d85"
+  }
+}

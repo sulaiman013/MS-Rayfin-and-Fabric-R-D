@@ -1,0 +1,27 @@
+table DimLeadSource
+	lineageTag: aaaaaaaa-0000-0000-0000-000000000006
+
+	column LeadSourceKey
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: LeadSourceKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000007
+
+	column LeadSourceName
+		dataType: string
+		summarizeBy: none
+		sourceColumn: LeadSourceName
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000008
+
+	column Channel
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Channel
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000009
+
+	partition DimLeadSource = entity
+		mode: directLake
+		source
+			entityName: DimLeadSource
+			schemaName: dbo
+			expressionSource: DatabaseQuery

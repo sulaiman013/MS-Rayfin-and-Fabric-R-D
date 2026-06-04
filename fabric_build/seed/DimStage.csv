@@ -1,0 +1,6 @@
+StageKey,StageName,StageOrder
+1,New,1
+2,Consult,2
+3,Quote,3
+4,Won,4
+5,Lost,5

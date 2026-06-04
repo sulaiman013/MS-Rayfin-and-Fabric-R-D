@@ -1,0 +1,110 @@
+{
+  "name": "leads-reaching-each-stage-clusteredBarChart-40c649",
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "queryRef": "DimStage.StageName",
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimStage"
+                    }
+                  },
+                  "Property": "StageName"
+                }
+              },
+              "nativeQueryRef": "StageName"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "queryRef": "FactStageEvent.Leads Reaching Stage",
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactStageEvent"
+                    }
+                  },
+                  "Property": "Leads Reaching Stage"
+                }
+              },
+              "nativeQueryRef": "Leads Reaching Stage"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FactStageEvent"
+                  }
+                },
+                "Property": "Leads Reaching Stage"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {},
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Leads reaching each stage'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "position": {
+    "x": 20,
+    "y": 268,
+    "z": 0,
+    "width": 600,
+    "height": 200,
+    "tabOrder": 0
+  },
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json"
+}
