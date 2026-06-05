@@ -22,10 +22,10 @@ export class Lead {
   @date() updatedAt!: Date;
 
   // Foreign keys (convention: {navigationProperty}_id)
-  @text() rep_id!: string;
+  @uuid() rep_id!: string;
   @one(() => Rep) rep?: Rep;
 
-  @text() leadSource_id!: string;
+  @uuid() leadSource_id!: string;
   @one(() => LeadSource) leadSource?: LeadSource;
 
   @many(() => StageEvent) stageEvents?: StageEvent[];

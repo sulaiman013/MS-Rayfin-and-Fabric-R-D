@@ -1,4 +1,4 @@
-import { entity, role, uuid, text, decimal, date, set, one } from '@microsoft/rayfin-core';
+import { entity, role, uuid, decimal, date, set, one } from '@microsoft/rayfin-core';
 import { Lead } from './Lead.js';
 
 // A quote issued for a lead. respondedAt is null until the customer answers,
@@ -8,7 +8,7 @@ import { Lead } from './Lead.js';
 export class Quote {
   @uuid() id!: string;
 
-  @text() lead_id!: string;
+  @uuid() lead_id!: string;
   @one(() => Lead) lead?: Lead;
 
   @decimal() amount!: number;

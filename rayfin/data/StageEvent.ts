@@ -8,7 +8,7 @@ import { Lead } from './Lead.js';
 export class StageEvent {
   @uuid() id!: string;
 
-  @text() lead_id!: string;
+  @uuid() lead_id!: string;
   @one(() => Lead) lead?: Lead;
 
   @set('new', 'consult', 'quote', 'won', 'lost') stage!: 'new' | 'consult' | 'quote' | 'won' | 'lost';
