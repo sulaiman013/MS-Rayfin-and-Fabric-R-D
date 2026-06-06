@@ -1,0 +1,13 @@
+// Funnel: distinct leads that reached each stage, in funnel order.
+// {{FILTERS}} is replaced at runtime with the dashboard's current selection
+// (empty string when nothing is selected).
+EVALUATE
+CALCULATETABLE (
+    SUMMARIZECOLUMNS (
+        'DimStage'[StageName],
+        'DimStage'[StageOrder],
+        "Leads", [Leads Reaching Stage]
+    )
+    {{FILTERS}}
+)
+ORDER BY 'DimStage'[StageOrder]

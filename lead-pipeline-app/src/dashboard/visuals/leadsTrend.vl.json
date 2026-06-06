@@ -1,0 +1,24 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Total vs won leads by month. Two measures folded into one series field.",
+  "data": { "name": "table" },
+  "transform": [
+    { "fold": ["Total Leads", "Won Leads"], "as": ["Series", "Value"] }
+  ],
+  "mark": { "type": "line", "point": true },
+  "encoding": {
+    "x": { "field": "YearMonth", "type": "ordinal", "title": "Month" },
+    "y": { "field": "Value", "type": "quantitative", "title": "Leads" },
+    "color": {
+      "field": "Series",
+      "type": "nominal",
+      "title": null,
+      "scale": { "domain": ["Total Leads", "Won Leads"], "range": ["#4f46e5", "#10b981"] }
+    },
+    "tooltip": [
+      { "field": "YearMonth", "type": "ordinal", "title": "Month" },
+      { "field": "Series", "type": "nominal" },
+      { "field": "Value", "type": "quantitative" }
+    ]
+  }
+}

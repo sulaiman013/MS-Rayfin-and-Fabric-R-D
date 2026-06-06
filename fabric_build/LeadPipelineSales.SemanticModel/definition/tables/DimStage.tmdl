@@ -1,0 +1,30 @@
+table DimStage
+	lineageTag: aaaaaaaa-0000-0000-0000-000000000012
+
+	column StageKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: StageKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000013
+
+	column StageName
+		dataType: string
+		summarizeBy: none
+		sortByColumn: StageOrder
+		sourceColumn: StageName
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000014
+
+	column StageOrder
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: StageOrder
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000015
+
+	partition DimStage = entity
+		mode: directLake
+		source
+			entityName: DimStage
+			schemaName: dbo
+			expressionSource: DatabaseQuery
