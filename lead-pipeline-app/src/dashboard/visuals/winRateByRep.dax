@@ -1,0 +1,12 @@
+// Win rate by rep, sorted high to low.
+EVALUATE
+CALCULATETABLE (
+    SUMMARIZECOLUMNS (
+        'DimRep'[RepName],
+        "Win Rate", [Win Rate],
+        "Won Leads", [Won Leads],
+        "Total Leads", [Total Leads]
+    )
+    {{FILTERS}}
+)
+ORDER BY [Win Rate] DESC

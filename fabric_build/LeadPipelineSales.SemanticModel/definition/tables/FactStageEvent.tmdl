@@ -1,0 +1,77 @@
+table FactStageEvent
+	lineageTag: aaaaaaaa-0000-0000-0000-000000000052
+
+	/// Distinct leads that reached the stage in context. Drives the funnel.
+	measure 'Leads Reaching Stage' = DISTINCTCOUNT('FactStageEvent'[LeadKey])
+		formatString: 0
+		displayFolder: Stage Flow
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000053
+
+	/// Average days a lead spends in a stage. Blank unless a single stage is in context.
+	measure 'Avg Days in Stage' = IF(HASONEVALUE('DimStage'[StageName]), AVERAGE('FactStageEvent'[DurationDays]))
+		formatString: 0.0
+		displayFolder: Stage Flow
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000054
+
+	column StageEventKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: StageEventKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000055
+
+	column LeadKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: LeadKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000056
+
+	column StageKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: StageKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000057
+
+	column EnteredDateKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: EnteredDateKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000058
+
+	column DurationDays
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: DurationDays
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000059
+
+	column RepKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: RepKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000060
+
+	column LeadSourceKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: LeadSourceKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000061
+
+	column SourceSystem
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: SourceSystem
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000062
+
+	partition FactStageEvent = entity
+		mode: directLake
+		source
+			entityName: FactStageEvent
+			schemaName: dbo
+			expressionSource: DatabaseQuery

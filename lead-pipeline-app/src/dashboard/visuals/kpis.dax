@@ -1,0 +1,12 @@
+// Single-row query for the KPI cards. Each value is a governed semantic-model measure.
+EVALUATE
+CALCULATETABLE (
+    ROW (
+        "Total Leads", [Total Leads],
+        "Win Rate", [Win Rate],
+        "Pipeline Value", [Pipeline Value],
+        "Won Value", [Won Value],
+        "Stalled Leads", [Stalled Leads]
+    )
+    {{FILTERS}}
+)

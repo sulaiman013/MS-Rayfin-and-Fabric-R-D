@@ -1,0 +1,56 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-blue-50: oklch(0.97 0.014 254.6);
+  --color-blue-100: oklch(0.932 0.032 255.6);
+  --color-blue-500: oklch(0.623 0.214 259.1);
+  --color-blue-600: oklch(0.546 0.245 262.9);
+  --color-blue-700: oklch(0.488 0.243 264.4);
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Pipeline tokens: emerald accent + indigo secondary, warm near-white surfaces,
+     slate text. Never #000/#fff. */
+  --color-surface: oklch(0.984 0.009 168);
+  --color-panel: oklch(0.999 0.002 168);
+  --color-rail: oklch(0.962 0.01 168);
+  --color-line: oklch(0.907 0.01 168);
+  --color-ink: oklch(0.26 0.02 240);
+  --color-muted: oklch(0.50 0.02 245);
+  --color-faint: oklch(0.63 0.018 245);
+  --color-accent: oklch(0.64 0.145 163);
+  --color-accent-strong: oklch(0.55 0.135 163);
+  --color-accent-soft: oklch(0.952 0.05 165);
+  --color-indigo: oklch(0.51 0.21 274);
+  --color-indigo-soft: oklch(0.952 0.045 274);
+  /* Dark "bento" accent cards. */
+  --color-panel-dark: oklch(0.235 0.022 178);
+  --color-panel-dark-2: oklch(0.30 0.02 178);
+
+  /* Semantic states. */
+  --color-positive: oklch(0.60 0.14 163);
+  --color-positive-soft: oklch(0.955 0.05 165);
+  --color-warn: oklch(0.68 0.15 65);
+  --color-warn-soft: oklch(0.958 0.05 75);
+  --color-danger: oklch(0.57 0.20 22);
+  --color-danger-soft: oklch(0.962 0.03 22);
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}

@@ -1,0 +1,11 @@
+// Leads over time: total vs won, by calendar month.
+EVALUATE
+CALCULATETABLE (
+    SUMMARIZECOLUMNS (
+        'DimDate'[YearMonth],
+        "Total Leads", [Total Leads],
+        "Won Leads", [Won Leads]
+    )
+    {{FILTERS}}
+)
+ORDER BY 'DimDate'[YearMonth]
