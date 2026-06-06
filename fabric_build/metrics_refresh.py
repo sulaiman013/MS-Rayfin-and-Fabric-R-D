@@ -49,6 +49,7 @@ OUTER APPLY (
     SELECT DISTINCT POWER(2, e.StageKey) m FROM dbo.FactStageEvent e WHERE e.LeadKey = fl.LeadKey
   ) x
 ) rm
+WHERE fl.SourceSystem = 'hist'
 """
 
 # ---- gold (SQL) ----------------------------------------------------------

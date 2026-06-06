@@ -147,17 +147,81 @@ export function distinct(leads: LeadRow[], key: keyof LeadRow): string[] {
 }
 
 // ---- data access ---------------------------------------------------------
+// Translytical read: historical leads come from the materialized MetricLead table
+// (governed, static), and LIVE leads come straight from the operational Lead table
+// the board writes to, so a lead added on the board shows up here on the next read.
+const STAGE_CAP: Record<string, string> = { new: 'New', consult: 'Consult', quote: 'Quote', won: 'Won', lost: 'Lost' };
+const STAGE_ORD: Record<string, number> = { new: 1, consult: 2, quote: 3, won: 4, lost: 5 };
+
+interface LiveLead {
+  customerName: string;
+  projectType?: string;
+  estimatedValue?: number;
+  stage: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  rep_id: string;
+  leadSource_id: string;
+}
+
+function liveToLeadRow(
+  l: LiveLead,
+  reps: Map<string, { name: string; showroom: string }>,
+  sources: Map<string, string>,
+): LeadRow {
+  const stageName = STAGE_CAP[l.stage] ?? 'New';
+  const stageOrder = STAGE_ORD[l.stage] ?? 1;
+  const created = new Date(l.createdAt);
+  const updated = new Date(l.updatedAt);
+  const isOpen = stageOrder <= 3 ? 1 : 0;
+  const daysIdle = Math.max(0, Math.floor((Date.now() - updated.getTime()) / 86_400_000));
+  const rep = reps.get(l.rep_id);
+  return {
+    customerName: l.customerName,
+    repName: rep?.name ?? 'Unknown',
+    showroom: rep?.showroom ?? 'unknown',
+    sourceName: sources.get(l.leadSource_id) ?? 'Unknown',
+    projectType: l.projectType ?? 'Unknown',
+    stageName,
+    stageOrder,
+    reachedMask: 1 << stageOrder, // current-stage funnel does not use this
+    estimatedValue: l.estimatedValue ?? 0,
+    createdDateKey: created.getFullYear() * 10000 + (created.getMonth() + 1) * 100 + created.getDate(),
+    yearMonth: `${created.getFullYear()}-${String(created.getMonth() + 1).padStart(2, '0')}`,
+    isWon: l.stage === 'won' ? 1 : 0,
+    isLost: l.stage === 'lost' ? 1 : 0,
+    isOpen,
+    isStalled: isOpen && daysIdle > 14 ? 1 : 0,
+    daysIdle,
+  };
+}
+
 export async function getLeads(): Promise<LeadRow[]> {
   if (isLocalBackend()) return LOCAL_LEADS;
-  const rows = await getRayfinClient()
-    .data.MetricLead.select([
-      'customerName', 'repName', 'showroom', 'sourceName', 'projectType', 'stageName',
-      'stageOrder', 'reachedMask', 'estimatedValue', 'createdDateKey', 'yearMonth',
-      'isWon', 'isLost', 'isOpen', 'isStalled', 'daysIdle',
-    ])
-    .first(5000)
-    .execute();
-  return rows as unknown as LeadRow[];
+  const c = getRayfinClient();
+  const [histRows, liveLeads, reps, sources] = await Promise.all([
+    c.data.MetricLead
+      .select([
+        'customerName', 'repName', 'showroom', 'sourceName', 'projectType', 'stageName',
+        'stageOrder', 'reachedMask', 'estimatedValue', 'createdDateKey', 'yearMonth',
+        'isWon', 'isLost', 'isOpen', 'isStalled', 'daysIdle',
+      ])
+      .first(5000)
+      .execute(),
+    c.data.Lead
+      .select(['customerName', 'projectType', 'estimatedValue', 'stage', 'createdAt', 'updatedAt', 'rep_id', 'leadSource_id'])
+      .first(5000)
+      .execute(),
+    c.data.Rep.select(['id', 'name', 'showroom']).execute(),
+    c.data.LeadSource.select(['id', 'name']).execute(),
+  ]);
+  const repMap = new Map(
+    (reps as Array<{ id: string; name: string; showroom: string }>).map((r) => [r.id, { name: r.name, showroom: r.showroom }]),
+  );
+  const srcMap = new Map((sources as Array<{ id: string; name: string }>).map((s) => [s.id, s.name]));
+  const hist = histRows as unknown as LeadRow[];
+  const live = (liveLeads as unknown as LiveLead[]).map((l) => liveToLeadRow(l, repMap, srcMap));
+  return [...hist, ...live];
 }
 
 // Deterministic local sample so `npm run dev` shows the interactions offline.
