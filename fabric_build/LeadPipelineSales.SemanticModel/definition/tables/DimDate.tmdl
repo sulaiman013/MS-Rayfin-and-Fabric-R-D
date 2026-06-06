@@ -1,0 +1,67 @@
+table DimDate
+	lineageTag: aaaaaaaa-0000-0000-0000-000000000016
+
+	column DateKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: DateKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000017
+
+	column Date
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: Date
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000018
+
+	column Year
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: Year
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000019
+
+	column Quarter
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Quarter
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000020
+
+	column MonthNumber
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: MonthNumber
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000021
+
+	column MonthName
+		dataType: string
+		summarizeBy: none
+		sortByColumn: MonthNumber
+		sourceColumn: MonthName
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000022
+
+	column YearMonth
+		dataType: string
+		summarizeBy: none
+		sourceColumn: YearMonth
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000023
+
+	column DayOfWeek
+		dataType: string
+		summarizeBy: none
+		sourceColumn: DayOfWeek
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000024
+
+	column IsWeekend
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: IsWeekend
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000025
+
+	partition DimDate = entity
+		mode: directLake
+		source
+			entityName: DimDate
+			schemaName: dbo
+			expressionSource: DatabaseQuery

@@ -1,0 +1,36 @@
+relationship rel01
+	fromColumn: FactLead.RepKey
+	toColumn: DimRep.RepKey
+
+relationship rel02
+	fromColumn: FactLead.LeadSourceKey
+	toColumn: DimLeadSource.LeadSourceKey
+
+relationship rel03
+	fromColumn: FactLead.CurrentStageKey
+	toColumn: DimStage.StageKey
+
+relationship rel04
+	fromColumn: FactLead.CreatedDateKey
+	toColumn: DimDate.DateKey
+
+relationship rel05
+	fromColumn: FactLead.WonDateKey
+	toColumn: DimDate.DateKey
+	isActive: false
+
+relationship rel06
+	fromColumn: FactStageEvent.StageKey
+	toColumn: DimStage.StageKey
+
+relationship rel07
+	fromColumn: FactStageEvent.EnteredDateKey
+	toColumn: DimDate.DateKey
+
+relationship rel08
+	fromColumn: FactStageEvent.RepKey
+	toColumn: DimRep.RepKey
+
+relationship rel09
+	fromColumn: FactStageEvent.LeadSourceKey
+	toColumn: DimLeadSource.LeadSourceKey

@@ -1,0 +1,172 @@
+table FactLead
+	lineageTag: aaaaaaaa-0000-0000-0000-000000000026
+
+	/// Count of leads in context.
+	measure 'Total Leads' = COUNTROWS('FactLead')
+		formatString: 0
+		displayFolder: Counts
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000027
+
+	/// Leads that closed Won.
+	measure 'Won Leads' = CALCULATE(COUNTROWS('FactLead'), 'FactLead'[IsWon] = 1)
+		formatString: 0
+		displayFolder: Counts
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000028
+
+	/// Leads that closed Lost.
+	measure 'Lost Leads' = CALCULATE(COUNTROWS('FactLead'), 'FactLead'[IsLost] = 1)
+		formatString: 0
+		displayFolder: Counts
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000029
+
+	/// Leads still in New/Consult/Quote.
+	measure 'Open Leads' = CALCULATE(COUNTROWS('FactLead'), 'FactLead'[IsOpen] = 1)
+		formatString: 0
+		displayFolder: Counts
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000030
+
+	/// Won / (Won + Lost). Decided-deal win rate; excludes Open leads, so it is not a percent of all leads.
+	measure 'Win Rate' = DIVIDE([Won Leads], [Won Leads] + [Lost Leads])
+		formatString: 0.0%
+		displayFolder: Rates
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000031
+
+	/// Estimated value of Open leads.
+	measure 'Pipeline Value' = CALCULATE(SUM('FactLead'[EstimatedValue]), 'FactLead'[IsOpen] = 1)
+		formatString: \$#,0
+		displayFolder: Value
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000032
+
+	/// Estimated value of Won leads.
+	measure 'Won Value' = CALCULATE(SUM('FactLead'[EstimatedValue]), 'FactLead'[IsWon] = 1)
+		formatString: \$#,0
+		displayFolder: Value
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000033
+
+	/// Won Value divided by Won Leads.
+	measure 'Avg Deal Size' = DIVIDE([Won Value], [Won Leads])
+		formatString: \$#,0
+		displayFolder: Value
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000034
+
+	/// Open leads with no stage change in more than 14 days; the follow-up backlog.
+	measure 'Stalled Leads' = CALCULATE(COUNTROWS('FactLead'), 'FactLead'[IsStalled] = 1)
+		formatString: 0
+		displayFolder: Counts
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000035
+
+	column LeadKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: LeadKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000036
+
+	column LeadBK
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: LeadBK
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000037
+
+	column CustomerName
+		dataType: string
+		summarizeBy: none
+		sourceColumn: CustomerName
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000038
+
+	column RepKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: RepKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000039
+
+	column LeadSourceKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: LeadSourceKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000040
+
+	column CurrentStageKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: CurrentStageKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000041
+
+	column CreatedDateKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: CreatedDateKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000042
+
+	column WonDateKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: WonDateKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000043
+
+	column ProjectType
+		dataType: string
+		summarizeBy: none
+		sourceColumn: ProjectType
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000044
+
+	column EstimatedValue
+		dataType: decimal
+		summarizeBy: sum
+		sourceColumn: EstimatedValue
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000045
+
+	column IsWon
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: IsWon
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000046
+
+	column IsLost
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: IsLost
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000047
+
+	column IsOpen
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: IsOpen
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000048
+
+	column LastEventDateKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: LastEventDateKey
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000049
+
+	column IsStalled
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: IsStalled
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000050
+
+	column SourceSystem
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: SourceSystem
+		lineageTag: aaaaaaaa-0000-0000-0000-000000000051
+
+	partition FactLead = entity
+		mode: directLake
+		source
+			entityName: FactLead
+			schemaName: dbo
+			expressionSource: DatabaseQuery

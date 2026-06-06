@@ -1,0 +1,22 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Win rate by rep as a horizontal bar, sorted by value.",
+  "data": { "name": "table" },
+  "mark": { "type": "bar", "cornerRadiusEnd": 6 },
+  "encoding": {
+    "y": { "field": "RepName", "type": "nominal", "sort": "-x", "title": null },
+    "x": {
+      "field": "Win Rate",
+      "type": "quantitative",
+      "title": "Win rate",
+      "axis": { "format": ".0%" }
+    },
+    "color": { "value": "#4f46e5" },
+    "tooltip": [
+      { "field": "RepName", "type": "nominal", "title": "Rep" },
+      { "field": "Win Rate", "type": "quantitative", "format": ".0%", "title": "Win rate" },
+      { "field": "Won Leads", "type": "quantitative", "title": "Won" },
+      { "field": "Total Leads", "type": "quantitative", "title": "Total" }
+    ]
+  }
+}

@@ -7,6 +7,16 @@ build/
 .env.*
 *.log
 
+# Python
+__pycache__/
+*.pyc
+
+# Vite / Playwright
+.vite/
+*.tsbuildinfo
+test-results/
+playwright-report/
+
 # OS
 .DS_Store
 Thumbs.db
