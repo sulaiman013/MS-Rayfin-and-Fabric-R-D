@@ -1,6 +1,0 @@
-expression DatabaseQuery =
-		let
-			Source = Sql.Database("<your-workspace>.datawarehouse.fabric.microsoft.com", "<sql-analytics-endpoint-guid>")
-		in
-			Source
-	lineageTag: aaaaaaaa-0000-0000-0000-000000000001

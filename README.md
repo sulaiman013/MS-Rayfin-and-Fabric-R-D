@@ -143,7 +143,7 @@ so every number agrees (no reaching-vs-current mismatch).
 | `fabric_build/wh.py`, `run_sql.py` | Warehouse connection helper (token-injected pyodbc) and SQL runner. |
 | `fabric_build/app_seed*.py` | Seed reps / sources / a busy set of operational leads into the app database. |
 | `fabric_build/LeadPipelineSales.SemanticModel/` | The generated TMDL semantic model. |
-| `fabric/`, `dataapp/`, `powerbi/`, `report/`, `seed/` | Earlier R&D: PySpark gold build, viz-as-code spec pack, report-layout notes, sample SQL. |
+| `dataapp/`, `seed/` | Earlier R&D: viz-as-code spec pack, sample SQL. |
 
 Tenant-specific values (workspace / SQL endpoint GUIDs) and all `.env*` files are **gitignored**. No
 secrets are committed; the scripts read credentials from environment variables.
