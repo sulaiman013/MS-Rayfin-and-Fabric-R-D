@@ -1,5 +1,9 @@
 # Rayfin + Microsoft Fabric: a translytical lead-to-install pipeline
 
+<p align="center">
+  <img src="assets/pipeline-demo.gif" alt="50-second animated walkthrough of the translytical pipeline app on Microsoft Fabric" width="100%" />
+</p>
+
 > One Microsoft Fabric app that does **both** jobs: reps work leads on an operational kanban
 > **Board**, and a manager reads a governed analytics **Dashboard**, on the **same data**, in the
 > **same app**, with no ETL pipeline in between. This is the **translytical** pattern, built end to
